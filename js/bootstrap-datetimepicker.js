@@ -544,9 +544,11 @@
             top = top - containerOffset.top;
             left = left - containerOffset.left;
 
+/*
             if( !elementOrParentIsFixed(this.element) ){
                 top = top + document.body.scrollTop;
             }
+*/
 
             this.picker.css({
                 top:    top,
@@ -910,10 +912,6 @@
                 }
                 switch (target[0].nodeName.toLowerCase()) {
                     case 'th':
-                        this.element.trigger({
-                            type: 'change' + this.convertViewModeText(this.viewMode).replace(/^(.)|\s(.)/g, function(l){ return l.toUpperCase();}),
-                            date: this.viewDate
-                        });
                         switch (target[0].className) {
                             case 'switch':
                                 this.showMode(1);
@@ -938,6 +936,9 @@
                                 }
                                 this.fill();
                                 this.element.trigger({
+                                    type: 'change' + this.convertViewModeText(this.viewMode).replace(/^(.)|\s(.)/g, function(l){ return l.toUpperCase();}),
+                                    date: this.viewDate
+                                }).trigger({
                                     type:      target[0].className + ':' + this.convertViewModeText(this.viewMode),
                                     date:      this.viewDate,
                                     startDate: this.startDate,
