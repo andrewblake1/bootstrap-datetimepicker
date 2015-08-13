@@ -471,7 +471,8 @@
             this.datesDisabled = $.map(this.datesDisabled, function (d) {
                 return DPGlobal.parseDate(d, format, language, formatType);
             });
-            //this.update();
+//            this.update();
+            this.fill();
             this.updateNavArrows();
         },
 
@@ -483,7 +484,8 @@
             this.minutesDisabled = $.map(this.minutesDisabled, function (d) {
                 return parseInt(d, 10);
             });
-            this.update();
+//            this.update();
+            this.fill();
             this.updateNavArrows();
         },
 
@@ -495,7 +497,8 @@
             this.hoursDisabled = $.map(this.hoursDisabled, function (d) {
                 return parseInt(d, 10);
             });
-            this.update();
+//            this.update();
+            this.fill();
             this.updateNavArrows();
         },
 
@@ -688,11 +691,10 @@
             var txt = '', meridian = '', meridianOld = '';
             var hoursDisabled = this.hoursDisabled || [];
             for (var i = 0; i < 24; i++) {
-                if (hoursDisabled.indexOf(i) !== -1) continue;
                 var actual = UTCDate(year, month, dayMonth, i);
                 clsName = '';
                 // We want the previous hour for the startDate
-                if ((actual.valueOf() + 3600000) <= this.startDate || actual.valueOf() > this.endDate) {
+                if ((hoursDisabled.indexOf(i) !== -1) || (actual.valueOf() + 3600000) <= this.startDate || actual.valueOf() > this.endDate) {
                     clsName += ' disabled';
                 } else if (hours == i) {
                     clsName += ' active';
@@ -722,10 +724,9 @@
             txt = '', meridian = '', meridianOld = '';
             var minutesDisabled = this.minutesDisabled || [];
             for (var i = 0; i < 60; i += this.minuteStep) {
-                if (minutesDisabled.indexOf(i) !== -1) continue;
                 var actual = UTCDate(year, month, dayMonth, hours, i, 0);
                 clsName = '';
-                if (actual.valueOf() < this.startDate || actual.valueOf() > this.endDate) {
+                if ((minutesDisabled.indexOf(i) !== -1) || actual.valueOf() < this.startDate || actual.valueOf() > this.endDate) {
                     clsName += ' disabled';
                 } else if (Math.floor(minutes / this.minuteStep) == Math.floor(i / this.minuteStep)) {
                     clsName += ' active';
@@ -872,6 +873,7 @@
             }
 
             this.wheelPause = true;
+            this.wheelPause = true;
 
             var originalEvent = e.originalEvent;
 
@@ -934,11 +936,12 @@
                                         this.viewDate = this.moveYear(this.viewDate, dir);
                                         break;
                                 }
-                                this.fill();
                                 this.element.trigger({
                                     type: 'change' + this.convertViewModeText(this.viewMode).replace(/^(.)|\s(.)/g, function(l){ return l.toUpperCase();}),
                                     date: this.viewDate
-                                }).trigger({
+                                });
+                                this.fill();
+                                this.element.trigger({
                                     type:      target[0].className + ':' + this.convertViewModeText(this.viewMode),
                                     date:      this.viewDate,
                                     startDate: this.startDate,
@@ -986,6 +989,7 @@
                                 }
                             } else if (target.is('.year')) {
                                 this.viewDate.setUTCDate(1);
+                                this.vieDate.setUTCDate(1);
                                 year = parseInt(target.text(), 10) || 0;
                                 this.viewDate.setUTCFullYear(year);
                                 this.element.trigger({
@@ -1091,6 +1095,7 @@
             this.setValue();
             var element;
             if (this.isInput) {
+                element = this.element;
                 element = this.element;
             } else if (this.component) {
                 element = this.element.find('input');
